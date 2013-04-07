@@ -232,12 +232,17 @@ class User < ActiveRecord::Base
   # Projects user has access to
   def authorized_projects
     @project_ids ||= (owned_projects.pluck(:id) + projects.pluck(:id)).uniq
+    @project_ids = @project_ids | public_projects.pluck(:id)
     Project.where(id: @project_ids)
   end
 
   def authorized_teams
     @team_ids ||= (user_teams.pluck(:id) + own_teams.pluck(:id)).uniq
     UserTeam.where(id: @team_ids)
+  end
+
+  def public_projects
+    Project.where("projects.public = true")
   end
 
   # Team membership in authorized projects
@@ -249,12 +254,16 @@ class User < ActiveRecord::Base
     admin
   end
 
+  def is_guest?
+    username == 'guest'
+  end
+
   def require_ssh_key?
-    keys.count == 0
+    !is_guest? && keys.count == 0
   end
 
   def can_change_username?
-    Gitlab.config.gitlab.username_changing_enabled
+    !is_guest? && Gitlab.config.gitlab.username_changing_enabled
   end
 
   def can_create_project?
