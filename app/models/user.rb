@@ -267,11 +267,15 @@ class User < ActiveRecord::Base
   end
 
   def can_create_project?
-    projects_limit > owned_projects.count
+    projects_limit > owned_projects.count and not self.is_guest?
   end
 
   def can_create_group?
-    can?(:create_group, nil)
+    can?(:create_group, nil) and not self.is_guest?
+  end
+
+  def can_create_team?
+      can?(:create_team, nil) and not self.is_guest?
   end
 
   def abilities

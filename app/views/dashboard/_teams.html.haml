@@ -3,10 +3,11 @@
     Teams
     %span.light
       (#{teams.count})
-    %span.pull-right
-      = link_to new_team_path, class: "btn btn-small" do
-        %i.icon-plus
-        New Team
+    -if current_user.can_create_team?
+      %span.pull-right
+        = link_to new_team_path, class: "btn btn-small" do
+          %i.icon-plus
+          New Team
   %ul.well-list
     - teams.each do |team|
       %li
