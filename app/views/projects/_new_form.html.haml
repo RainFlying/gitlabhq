@@ -31,7 +31,12 @@
         URL must be clonable
 
   %p.padded
-    New projects are private by default. You choose who can see the project and commit to repository.
+    .clearfix
+      = f.label :public do
+        Make this project public
+      .input
+        = f.check_box :public, { :checked => '' }, true, nil
+    New projects are private by default. If checked, all users will get reporter level permissions.
   %hr
 
   - if current_user.can_create_group?

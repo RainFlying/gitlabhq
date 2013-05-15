@@ -27,6 +27,11 @@ class Ability
 
       team = project.team
 
+      # If it's a public project, all users will get reporter level access
+      if project.is_public?
+        rules << project_report_rules
+      end
+
       # Rules based on role in project
       if team.masters.include?(user)
         rules << project_master_rules
