@@ -232,7 +232,12 @@ class User < ActiveRecord::Base
   # Projects user has access to
   def authorized_projects
     @project_ids ||= (owned_projects.pluck(:id) + projects.pluck(:id)).uniq
+    @project_ids |= public_projects.pluck(:id)
     Project.where(id: @project_ids)
+  end
+
+  def public_projects
+    Project.where("projects.public = true")
   end
 
   def authorized_teams
