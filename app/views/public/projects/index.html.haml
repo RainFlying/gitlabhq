@@ -11,7 +11,8 @@
           %i.icon-share
           = link_to project.name_with_namespace, project
           .pull-right
-            %pre.dark.tiny git clone #{project.http_url_to_repo}
+            - if current_user
+              %pre.dark.tiny git clone #{project.http_url_to_repo}
         %p.description
           = project.description
     - unless @projects.present?
